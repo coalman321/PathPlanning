@@ -77,11 +77,16 @@ public class Node {
         protected Node goal;
         protected int cost;
         protected boolean hasSearched = false;
+        protected Node cameFrom = null;
 
         public ManipNode(Node node, Node goal){
             super(node.pos_x, node.pos_y, TraversalState.UNKNOWN);
             this.goal = goal;
             cost = 1;
+        }
+
+        public void setFrom(Node node){
+            cameFrom = node;
         }
 
         public void setHasSearched(boolean hasSearched) {
