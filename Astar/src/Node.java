@@ -1,4 +1,4 @@
-public class Node {
+public class Node implements Comparable<Node>{
 
     enum TraversalState{
         IMPASSABLE(9),  //cannot pass through
@@ -18,7 +18,7 @@ public class Node {
         }
     }
 
-    protected int pos_x, pos_y;
+    protected int pos_x, pos_y, cost;
     protected TraversalState traversalState;
     protected boolean hasSearched = false;
     protected Node cameFrom = null;
@@ -33,6 +33,7 @@ public class Node {
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.traversalState = traversalState;
+        cost = 0;
     }
 
     /**
@@ -52,21 +53,17 @@ public class Node {
         return pos_y;
     }
 
-    public int distanceTo(Node node){
-        if(node != null) return (int) Math.sqrt(Math.pow(pos_x - node.pos_x, 2) + Math.pow(pos_y - node.pos_y, 2));
-        return 0;
-    }
-
-    public int getF(Node goal) {
-        return traversalState.getWeight() + distanceTo(goal);
-    }
-
     public Node getCameFrom() {
         return cameFrom;
     }
 
     public void setCameFrom(Node cameFrom) {
+        cost = cameFrom.cost + 1;
         this.cameFrom = cameFrom;
+    }
+
+    public int getCost(){
+        return cost;
     }
 
     public boolean getSearched() {
@@ -96,5 +93,10 @@ public class Node {
     public void reset() {
         hasSearched = false;
         cameFrom = null;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        if()
     }
 }
