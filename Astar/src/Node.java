@@ -69,7 +69,11 @@ public class Node {
         this.cameFrom = cameFrom;
     }
 
-    public void setHasSearched(boolean hasSearched) {
+    public boolean getSearched() {
+        return hasSearched;
+    }
+
+    public void setSearched(boolean hasSearched) {
         this.hasSearched = hasSearched;
     }
 

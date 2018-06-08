@@ -37,27 +37,56 @@ public class Map {
         }
     }
 
-    public LinkedList<Node> adjacentTo(int x, int y){
+    public LinkedList<Node> getPathBetween(Node start, Node end){
 
-        LinkedList<Node> toReturn = new LinkedList<Node>();
+        //prep variables for manipulated mapping
+        LinkedList<Node> toVisit = new LinkedList<>();
+        Node current = start;
 
-        //above
-        if(y - 1 > -1 && nodeMap[x][y - 1].canTraverse() && !nodeMap[x][y - 1].hasSearched)
-            toReturn.add(nodeMap[x][y - 1]);
-        //below
-        if(y + 1 < nodeMap[0].length && nodeMap[x][y + 1].canTraverse() && !nodeMap[x][y + 1].hasSearched)
-            toReturn.add(nodeMap[x][y + 1]);
-        //left
-        if(x - 1 > -1 && nodeMap[x - 1][y].canTraverse() && !nodeMap[x - 1][y].hasSearched)
-            toReturn.add(nodeMap[x - 1][y]);
-        //right
-        if(x + 1 < nodeMap.length && nodeMap[x + 1][y].canTraverse() && !nodeMap[x + 1][y].hasSearched)
-            toReturn.add(nodeMap[x + 1][y]);
-        return toReturn;
+        //commence manipulated mapping
+        while(!current.equals(end)){
+            toVisit.addAll(adjacentTo(current));
+            current = toVisit.poll();
+        }
+
+        LinkedList<Node> path = new LinkedList<>();
+        Node prev = end.getCameFrom();
+        while(!prev.equals(start)){
+            path.add(prev);
+            prev = prev.getCameFrom();
+        }
+
+        return path;
     }
 
     public LinkedList<Node> adjacentTo(Node node){
-        return adjacentTo(node.getPos_x(), node.getPos_y());
+
+        LinkedList<Node> toReturn = new LinkedList<>();
+
+        //above
+        if(node.getPos_y() - 1 > -1 && nodeMap[node.getPos_x()][node.getPos_y() - 1].canTraverse() && !nodeMap[node.getPos_x()][node.getPos_y() - 1].getSearched()){
+            nodeMap[node.getPos_x()][node.getPos_y() - 1].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_x()][node.getPos_y() - 1]);
+        }
+
+        //below
+        if(node.getPos_y() + 1 < nodeMap[0].length && nodeMap[node.getPos_x()][node.getPos_y() + 1].canTraverse() && !nodeMap[node.getPos_x()][node.getPos_y() + 1].getSearched()) {
+            nodeMap[node.getPos_x()][node.getPos_y() + 1].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_x()][node.getPos_y() + 1]);
+        }
+
+        //left
+        if(node.getPos_x() - 1 > -1 && nodeMap[node.getPos_x() - 1][node.getPos_y()].canTraverse() && !nodeMap[node.getPos_x() - 1][node.getPos_y()].getSearched()) {
+            nodeMap[node.getPos_x() - 1][node.getPos_y()].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_x() - 1][node.getPos_y()]);
+        }
+        //right
+        if(node.getPos_x() + 1 < nodeMap.length && nodeMap[node.getPos_x() + 1][node.getPos_y()].canTraverse() && !nodeMap[node.getPos_x() + 1][node.getPos_y()].getSearched()) {
+            nodeMap[node.getPos_x() + 1][node.getPos_y()].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_x() + 1][node.getPos_y()]);
+        }
+        return toReturn;
     }
+
 
 }
