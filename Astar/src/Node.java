@@ -4,8 +4,8 @@ public class Node implements Comparable<Node>{
         IMPASSABLE(9),  //cannot pass through
         UNKNOWN(7),     //this node is unknown need more data
         UNCERTAIN(4),   //data inconclusive but suggests passable
-        PASSABLE(1),    //passable node
-        TRAVERSED(0);   //node that has already been traversed
+        PASSABLE(2),    //passable node
+        TRAVERSED(1);   //node that has already been traversed
 
         private int weight;
 
@@ -21,7 +21,7 @@ public class Node implements Comparable<Node>{
     protected int pos_x, pos_y, cost;
     protected TraversalState traversalState;
     protected boolean hasSearched = false;
-    protected Node cameFrom = null;
+    protected Node cameFrom = null, goal;
 
     /**
      * creates new instance of node from x,y position and a traversal state
@@ -66,6 +66,14 @@ public class Node implements Comparable<Node>{
         return cost;
     }
 
+    public int distanceTo(Node node1, Node node2){
+        return (int) Math.sqrt(Math.pow(node1.getPos_x() - node2.getPos_x(), 2) + Math.pow(node1.getPos_y() - node2.getPos_y(), 2));
+    }
+
+    public int getF(Node goal) {
+        return traversalState.getWeight() * cost + distanceTo(this, goal);
+    }
+
     public boolean getSearched() {
         return hasSearched;
     }
@@ -93,10 +101,17 @@ public class Node implements Comparable<Node>{
     public void reset() {
         hasSearched = false;
         cameFrom = null;
+        goal = null;
+    }
+
+    public void setGoal(Node goal) {
+        this.goal = goal;
     }
 
     @Override
     public int compareTo(Node o) {
-        if()
+        if(getF(goal) < o.getF(goal)) return -1;
+        if(getF(goal) > o.getF(goal)) return 1;
+        return 0;
     }
 }

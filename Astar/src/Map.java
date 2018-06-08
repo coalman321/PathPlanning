@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 
 
@@ -41,15 +42,13 @@ public class Map {
         return nodeMap[x][y];
     }
 
-    public int distanceTo(Node node1, Node node2){
-        return (int) Math.sqrt(Math.pow(node1.getPos_x() - node2.getPos_x(), 2) + Math.pow(node1.getPos_y() - node2.getPos_y(), 2));
-    }
-
-    public int getF(Node current, Node goal) {
-        return current.traversalState.getWeight() + distanceTo(current, goal) + current.getCost();
-    }
-
     public LinkedList<Node> getPathBetween(Node start, Node end){
+
+        for(Node[] nodes : nodeMap){
+            for(Node node : nodes){
+                node.setGoal(end);
+            }
+        }
 
         //prep variables for manipulated mapping
         LinkedList<Node> toVisit = new LinkedList<>();
@@ -58,8 +57,8 @@ public class Map {
         //commence manipulated mapping
         while(!current.equals(end)){
             toVisit.addAll(adjacentTo(current));
-            //TODO sort by getF
-            current = toVisit.poll();
+            Collections.sort(toVisit);// sort by lowest F value
+            current = toVisit.poll(); //pull the lowest f off the stack
         }
 
         LinkedList<Node> path = new LinkedList<>();
