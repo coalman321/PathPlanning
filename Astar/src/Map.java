@@ -50,6 +50,7 @@ public class Map {
         //commence manipulated mapping
         while(!current.equals(end)){
             toVisit.addAll(adjacentTo(current));
+            //TODO sort by getF
             current = toVisit.poll();
         }
 
