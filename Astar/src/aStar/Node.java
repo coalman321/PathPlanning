@@ -1,3 +1,5 @@
+package aStar;
+
 public class Node implements Comparable<Node>{
 
     enum TraversalState{
@@ -16,12 +18,21 @@ public class Node implements Comparable<Node>{
         public int getWeight() {
             return weight;
         }
+
+        @Override
+        public String toString() {
+            return "" + weight;
+        }
     }
 
-    protected int pos_x, pos_y, cost;
+    //needed at load time
+    protected int pos_x, pos_y;
     protected TraversalState traversalState;
+
+    //needed at mapping time
     protected boolean hasSearched = false;
-    protected Node cameFrom = null, goal;
+    protected Node cameFrom = null, goal = null;
+    protected int cost;
 
     /**
      * creates new instance of node from x,y position and a traversal state
@@ -61,10 +72,6 @@ public class Node implements Comparable<Node>{
         hasSearched = true;
         cost = cameFrom.cost + 1;
         this.cameFrom = cameFrom;
-    }
-
-    public int getCost(){
-        return cost;
     }
 
     public int distanceTo(Node node1, Node node2){
@@ -115,5 +122,9 @@ public class Node implements Comparable<Node>{
     @Override
     public String toString() {
         return "node X: " + pos_x + " Y: " + pos_y + (canTraverse()? " traversable": " impassable");
+    }
+
+    public String serialize(){
+        return traversalState.toString();
     }
 }
