@@ -48,7 +48,7 @@ public class Map {
             for(Node[] nodes : nodeMap){
                 String toWrite = "";
                 for(Node node : nodes){
-                    toWrite += node.serialize();
+                    toWrite += node.serialize() + "\t"; //TSV
                 }
                 writer.write(toWrite + "\n");
             }
