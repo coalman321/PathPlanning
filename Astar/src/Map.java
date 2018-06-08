@@ -43,7 +43,7 @@ public class Map {
     }
 
     public LinkedList<Node> getPathBetween(Node start, Node end){
-
+        System.out.println("setting goal");
         for(Node[] nodes : nodeMap){
             for(Node node : nodes){
                 node.setGoal(end);
@@ -54,20 +54,25 @@ public class Map {
         LinkedList<Node> toVisit = new LinkedList<>();
         Node current = start;
 
-        //commence manipulated mapping
-        while(!current.equals(end)){
+        System.out.println("mapping started");
+        while(!current.equals(end) || toVisit.isEmpty()){
+            //System.out.println("iterating through map");
             toVisit.addAll(adjacentTo(current));
             Collections.sort(toVisit);// sort by lowest F value
             current = toVisit.poll(); //pull the lowest f off the stack
         }
+        System.out.println("iteration complete");
 
         LinkedList<Node> path = new LinkedList<>();
         Node prev = end.getCameFrom();
+        System.out.println("reconstructing map");
         while(!prev.equals(start)){
+            System.out.println("iteerating backwards through " + prev);
             path.addFirst(prev);
             prev = prev.getCameFrom();
         }
         path.addFirst(start);
+        System.out.println("map reconstructed");
         return path;
     }
 

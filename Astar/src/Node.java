@@ -114,4 +114,9 @@ public class Node implements Comparable<Node>{
         if(getF(goal) > o.getF(goal)) return 1;
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "node X: " + pos_x + " Y: " + pos_y + (canTraverse()? " traversable": " impassable");
+    }
 }
