@@ -37,25 +37,23 @@ public class Map {
 
 
     public LinkedList<Node> getPathBetween(Node start, Node end){
-        reset();
-        setGoal(end);
-
-
-        //prep variables for manipulated mapping
+        //prep for mapping process
+        reset(); //reset mapping flags
+        setGoal(end); //set new goal node
         LinkedList<Node> toVisit = new LinkedList<>();
-        toVisit.add(start);
-        Node current;
+        toVisit.add(start); //create new visitation list and add start node
+        Node current; //create node for manipulation
 
-        System.out.println("mapping started");
+        //System.out.println("mapping started");
         while(!toVisit.isEmpty()){
             current = toVisit.poll(); //pull the lowest f off the stack
-            System.out.println("searching " + current);
+            //System.out.println("searching " + current);
             if(current.equals(end)) break;
             toVisit.addAll(adjacentTo(current));
             Collections.sort(toVisit);// sort by lowest F value
-            System.out.println("sorted list to visit " + toVisit);
+            //System.out.println("sorted list to visit " + toVisit);
         }
-        System.out.println("iteration complete");
+        //System.out.println("iteration complete");
 
         return reconsruct(end, start);
 
@@ -70,7 +68,7 @@ public class Map {
     }
 
     private void setGoal(Node goal){
-        System.out.println("setting goal");
+        //System.out.println("setting goal");
         for(Node[] nodes : nodeMap){
             for(Node node : nodes){
                 node.setGoal(goal);
@@ -80,15 +78,16 @@ public class Map {
 
     private LinkedList<Node> reconsruct(Node end, Node start){
         LinkedList<Node> path = new LinkedList<>();
+        path.addFirst(end);
         Node prev = end.getCameFrom();
-        System.out.println("reconstructing map");
+        //System.out.println("reconstructing map");
         while(!prev.equals(start)){
 
             path.addFirst(prev);
             prev = prev.getCameFrom();
         }
         path.addFirst(start);
-        System.out.println("map reconstructed");
+        //System.out.println("map reconstructed");
         return path;
     }
 
