@@ -37,6 +37,10 @@ public class Map {
         }
     }
 
+    public Node getNode(int x, int y){
+        return nodeMap[x][y];
+    }
+
     public LinkedList<Node> getPathBetween(Node start, Node end){
 
         //prep variables for manipulated mapping
@@ -52,10 +56,10 @@ public class Map {
         LinkedList<Node> path = new LinkedList<>();
         Node prev = end.getCameFrom();
         while(!prev.equals(start)){
-            path.add(prev);
+            path.addFirst(prev);
             prev = prev.getCameFrom();
         }
-
+        path.addFirst(start);
         return path;
     }
 
