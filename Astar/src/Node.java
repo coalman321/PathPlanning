@@ -1,13 +1,10 @@
 public class Node {
 
-    protected int pos_x, pos_y;
-    protected TraversalState traversalState;
-
     enum TraversalState{
         IMPASSABLE(9),  //cannot pass through
         UNKNOWN(7),     //this node is unknown need more data
-        UNCERTAIN(5),   //data inconclusive but suggests passable
-        PASSABLE(2),    //passable node
+        UNCERTAIN(4),   //data inconclusive but suggests passable
+        PASSABLE(1),    //passable node
         TRAVERSED(0);   //node that has already been traversed
 
         private int weight;
@@ -21,6 +18,10 @@ public class Node {
         }
     }
 
+    protected int pos_x, pos_y;
+    protected TraversalState traversalState;
+    protected boolean hasSearched = false;
+    protected Node cameFrom = null;
 
     /**
      * creates new instance of node from x,y position and a traversal state
@@ -56,6 +57,22 @@ public class Node {
         return 0;
     }
 
+    public int getF(Node goal) {
+        return traversalState.getWeight() + distanceTo(goal);
+    }
+
+    public Node getCameFrom() {
+        return cameFrom;
+    }
+
+    public void setCameFrom(Node cameFrom) {
+        this.cameFrom = cameFrom;
+    }
+
+    public void setHasSearched(boolean hasSearched) {
+        this.hasSearched = hasSearched;
+    }
+
     public boolean canTraverse(){
         return traversalState != TraversalState.IMPASSABLE;
     }
@@ -72,31 +89,8 @@ public class Node {
         this.traversalState = traversalState;
     }
 
-    public class ManipNode extends Node {
-
-        protected Node goal;
-        protected int cost;
-        protected boolean hasSearched = false;
-        protected Node cameFrom = null;
-
-        public ManipNode(Node node, Node goal){
-            super(node.pos_x, node.pos_y, TraversalState.UNKNOWN);
-            this.goal = goal;
-            cost = 1;
-        }
-
-        public void setFrom(Node node){
-            cameFrom = node;
-        }
-
-        public void setHasSearched(boolean hasSearched) {
-            this.hasSearched = hasSearched;
-        }
-
-        public int getF(){
-            return traversalState.getWeight() + distanceTo(goal);
-        }
-
+    public void reset() {
+        hasSearched = false;
+        cameFrom = null;
     }
-
 }

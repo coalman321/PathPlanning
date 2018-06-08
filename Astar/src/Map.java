@@ -1,13 +1,8 @@
 import java.io.File;
-
+import java.util.LinkedList;
 
 
 public class Map {
-
-
-    //9 in cost is a solid object
-    //7 is uncertain
-    //1 is nominal
 
     Node[][] nodeMap;
 
@@ -30,13 +25,39 @@ public class Map {
         //import cost map from file
     }
 
-    public Node[] adjacentTo(int x, int y){
-        //TODO return safely and ignor non-passable nodes
-        return new Node[] {nodeMap[x - 1][y], nodeMap[x + 1][y], nodeMap[x][y - 1], nodeMap[x][y + 1]};
+    /**
+     * Resets the mapping state of nodes for re-use
+     * <p><b>Only resets path specific flags<b/>
+     */
+    public void reset(){
+        for(Node[] nodes : nodeMap){
+            for(Node node : nodes){
+                node.reset();
+            }
+        }
     }
 
-    public Node[] adjacentTo(Node node){
-        return adjacentTo(node.pos_x, node.pos_y);
+    public LinkedList<Node> adjacentTo(int x, int y){
+
+        LinkedList<Node> toReturn = new LinkedList<Node>();
+
+        //above
+        if(y - 1 > -1 && nodeMap[x][y - 1].canTraverse() && !nodeMap[x][y - 1].hasSearched)
+            toReturn.add(nodeMap[x][y - 1]);
+        //below
+        if(y + 1 < nodeMap[0].length && nodeMap[x][y + 1].canTraverse() && !nodeMap[x][y + 1].hasSearched)
+            toReturn.add(nodeMap[x][y + 1]);
+        //left
+        if(x - 1 > -1 && nodeMap[x - 1][y].canTraverse() && !nodeMap[x - 1][y].hasSearched)
+            toReturn.add(nodeMap[x - 1][y]);
+        //right
+        if(x + 1 < nodeMap.length && nodeMap[x + 1][y].canTraverse() && !nodeMap[x + 1][y].hasSearched)
+            toReturn.add(nodeMap[x + 1][y]);
+        return toReturn;
+    }
+
+    public LinkedList<Node> adjacentTo(Node node){
+        return adjacentTo(node.getPos_x(), node.getPos_y());
     }
 
 }
