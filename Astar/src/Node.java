@@ -2,7 +2,7 @@ public class Node implements Comparable<Node>{
 
     enum TraversalState{
         IMPASSABLE(9),  //cannot pass through
-        UNKNOWN(7),     //this node is unknown need more data
+        UNKNOWN(2),     //this node is unknown need more data
         UNCERTAIN(4),   //data inconclusive but suggests passable
         PASSABLE(2),    //passable node
         TRAVERSED(1);   //node that has already been traversed
@@ -58,6 +58,7 @@ public class Node implements Comparable<Node>{
     }
 
     public void setCameFrom(Node cameFrom) {
+        hasSearched = true;
         cost = cameFrom.cost + 1;
         this.cameFrom = cameFrom;
     }
@@ -76,10 +77,6 @@ public class Node implements Comparable<Node>{
 
     public boolean getSearched() {
         return hasSearched;
-    }
-
-    public void setSearched(boolean hasSearched) {
-        this.hasSearched = hasSearched;
     }
 
     public boolean canTraverse(){

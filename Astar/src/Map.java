@@ -26,11 +26,42 @@ public class Map {
         //import cost map from file
     }
 
+    public Node getNode(int x, int y){
+        return nodeMap[x][y];
+    }
+
     /**
      * Resets the mapping state of nodes for re-use
      * <p><b>Only resets path specific flags<b/>
      */
-    public void reset(){
+
+
+    public LinkedList<Node> getPathBetween(Node start, Node end){
+        reset();
+        setGoal(end);
+
+
+        //prep variables for manipulated mapping
+        LinkedList<Node> toVisit = new LinkedList<>();
+        toVisit.add(start);
+        Node current;
+
+        System.out.println("mapping started");
+        while(!toVisit.isEmpty()){
+            current = toVisit.poll(); //pull the lowest f off the stack
+            System.out.println("searching " + current);
+            if(current.equals(end)) break;
+            toVisit.addAll(adjacentTo(current));
+            Collections.sort(toVisit);// sort by lowest F value
+            System.out.println("sorted list to visit " + toVisit);
+        }
+        System.out.println("iteration complete");
+
+        return reconsruct(end, start);
+
+    }
+
+    private void reset(){
         for(Node[] nodes : nodeMap){
             for(Node node : nodes){
                 node.reset();
@@ -38,36 +69,21 @@ public class Map {
         }
     }
 
-    public Node getNode(int x, int y){
-        return nodeMap[x][y];
-    }
-
-    public LinkedList<Node> getPathBetween(Node start, Node end){
+    private void setGoal(Node goal){
         System.out.println("setting goal");
         for(Node[] nodes : nodeMap){
             for(Node node : nodes){
-                node.setGoal(end);
+                node.setGoal(goal);
             }
         }
+    }
 
-        //prep variables for manipulated mapping
-        LinkedList<Node> toVisit = new LinkedList<>();
-        Node current = start;
-
-        System.out.println("mapping started");
-        while(!current.equals(end) || toVisit.isEmpty()){
-            //System.out.println("iterating through map");
-            toVisit.addAll(adjacentTo(current));
-            Collections.sort(toVisit);// sort by lowest F value
-            current = toVisit.poll(); //pull the lowest f off the stack
-        }
-        System.out.println("iteration complete");
-
+    private LinkedList<Node> reconsruct(Node end, Node start){
         LinkedList<Node> path = new LinkedList<>();
         Node prev = end.getCameFrom();
         System.out.println("reconstructing map");
         while(!prev.equals(start)){
-            System.out.println("iteerating backwards through " + prev);
+
             path.addFirst(prev);
             prev = prev.getCameFrom();
         }
