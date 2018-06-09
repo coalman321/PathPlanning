@@ -38,7 +38,7 @@ public class Map {
         scanner.reset();
         for(int r = 0; r < x; r++){
             for(int c = 0; c < y; c++){
-                nodeMap[r][c] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
+                nodeMap[r][c] = new Node(c,r,Node.getStateFromInt(scanner.nextInt()));
             }
         }
 
@@ -47,12 +47,12 @@ public class Map {
     /**
      * method used to retrieve a specific node on a given map
      * <p>can be used to set node properties
-     * @param x x coordinate
      * @param y y coordinate
+     * @param x x coordinate
      * @return Node object at the coordinate pair specified
      */
     public Node getNode(int x, int y){
-        return nodeMap[x][y];
+        return nodeMap[y][x];
     }
 
     public void writeToFile(File file){
@@ -60,13 +60,16 @@ public class Map {
             file = new File(file.getAbsolutePath() + file.getAbsoluteFile() + 1);
         }
         try {
+            System.out.println("serializing map");
             PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             for(Node[] nodes : nodeMap){
                 String toWrite = "";
                 for(Node node : nodes){
                     toWrite += node.serialize() + "\t"; //TSV
                 }
-                writer.write(toWrite + "\n");
+                //System.out.println("writing line");
+                writer.println(toWrite);
+                writer.flush();
             }
         } catch (IOException e) {
             System.out.println("failed to serialize map to file");
@@ -77,27 +80,27 @@ public class Map {
 
         LinkedList<Node> toReturn = new LinkedList<>();
 
-        //above
-        if(node.getPos_y() - 1 > -1 && nodeMap[node.getPos_x()][node.getPos_y() - 1].canTraverse() && !nodeMap[node.getPos_x()][node.getPos_y() - 1].getSearched()){
-            nodeMap[node.getPos_x()][node.getPos_y() - 1].setCameFrom(node);
-            toReturn.add(nodeMap[node.getPos_x()][node.getPos_y() - 1]);
-        }
-
-        //below
-        if(node.getPos_y() + 1 < nodeMap[0].length && nodeMap[node.getPos_x()][node.getPos_y() + 1].canTraverse() && !nodeMap[node.getPos_x()][node.getPos_y() + 1].getSearched()) {
-            nodeMap[node.getPos_x()][node.getPos_y() + 1].setCameFrom(node);
-            toReturn.add(nodeMap[node.getPos_x()][node.getPos_y() + 1]);
-        }
-
         //left
-        if(node.getPos_x() - 1 > -1 && nodeMap[node.getPos_x() - 1][node.getPos_y()].canTraverse() && !nodeMap[node.getPos_x() - 1][node.getPos_y()].getSearched()) {
-            nodeMap[node.getPos_x() - 1][node.getPos_y()].setCameFrom(node);
-            toReturn.add(nodeMap[node.getPos_x() - 1][node.getPos_y()]);
+        if(node.getPos_x() - 1 > -1 && nodeMap[node.getPos_y()][node.getPos_x() - 1].canTraverse() && !nodeMap[node.getPos_y()][node.getPos_x() - 1].getSearched()){
+            nodeMap[node.getPos_y()][node.getPos_x() - 1].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_y()][node.getPos_x() - 1]);
         }
+
         //right
-        if(node.getPos_x() + 1 < nodeMap.length && nodeMap[node.getPos_x() + 1][node.getPos_y()].canTraverse() && !nodeMap[node.getPos_x() + 1][node.getPos_y()].getSearched()) {
-            nodeMap[node.getPos_x() + 1][node.getPos_y()].setCameFrom(node);
-            toReturn.add(nodeMap[node.getPos_x() + 1][node.getPos_y()]);
+        if(node.getPos_x() + 1 < nodeMap[0].length && nodeMap[node.getPos_y()][node.getPos_x() + 1].canTraverse() && !nodeMap[node.getPos_y()][node.getPos_x() + 1].getSearched()) {
+            nodeMap[node.getPos_y()][node.getPos_x() + 1].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_y()][node.getPos_x() + 1]);
+        }
+
+        //above
+        if(node.getPos_y() - 1 > -1 && nodeMap[node.getPos_y() - 1][node.getPos_x()].canTraverse() && !nodeMap[node.getPos_y() - 1][node.getPos_x()].getSearched()) {
+            nodeMap[node.getPos_y() - 1][node.getPos_x()].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_y() - 1][node.getPos_x()]);
+        }
+        //below
+        if(node.getPos_y() + 1 < nodeMap.length && nodeMap[node.getPos_y() + 1][node.getPos_x()].canTraverse() && !nodeMap[node.getPos_y() + 1][node.getPos_x()].getSearched()) {
+            nodeMap[node.getPos_y() + 1][node.getPos_x()].setCameFrom(node);
+            toReturn.add(nodeMap[node.getPos_y() + 1][node.getPos_x()]);
         }
         return toReturn;
     }

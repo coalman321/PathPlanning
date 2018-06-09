@@ -53,7 +53,7 @@ public class Node implements Comparable<Node>{
      * @param pos_y y position in a map
      * @param traversalState traversal state of the node
      */
-    public Node(int pos_x, int pos_y, TraversalState traversalState ){
+    public Node(int pos_y, int pos_x, TraversalState traversalState ){
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.traversalState = traversalState;
@@ -65,8 +65,8 @@ public class Node implements Comparable<Node>{
      * @param pos_x x position in a map
      * @param pos_y y position in a map
      */
-    public Node(int pos_x, int pos_y){
-        this(pos_x, pos_y, TraversalState.UNKNOWN);
+    public Node(int pos_y, int pos_x){
+        this(pos_y, pos_x, TraversalState.UNKNOWN);
     }
 
     public int getPos_x(){
@@ -87,11 +87,11 @@ public class Node implements Comparable<Node>{
         this.cameFrom = cameFrom;
     }
 
-    public int distanceTo(Node node1, Node node2){
+    public static int distanceTo(Node node1, Node node2){
         return (int) Math.sqrt(Math.pow(node1.getPos_x() - node2.getPos_x(), 2) + Math.pow(node1.getPos_y() - node2.getPos_y(), 2));
     }
 
-    public int getF(Node goal) {
+    public int getF() {
         return traversalState.getWeight() * cost + distanceTo(this, goal);
     }
 
@@ -127,8 +127,8 @@ public class Node implements Comparable<Node>{
 
     @Override
     public int compareTo(Node o) {
-        if(getF(goal) < o.getF(goal)) return -1;
-        if(getF(goal) > o.getF(goal)) return 1;
+        if(getF() < o.getF()) return -1;
+        if(getF() > o.getF()) return 1;
         return 0;
     }
 

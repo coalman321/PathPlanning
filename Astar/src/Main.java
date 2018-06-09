@@ -1,6 +1,8 @@
 import aStar.Map;
 import aStar.Node;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args){
@@ -14,6 +16,8 @@ public class Main {
         //map.getNode(5,4).setTraversalState(aStar.Node.TraversalState.IMPASSABLE);
         //map.getNode(4,5).setTraversalState(aStar.Node.TraversalState.IMPASSABLE);
         System.out.println(map.getPathBetween(map.getNode(1,1), map.getNode(4, 4)));
+
+        map.writeToFile(new File("C:\\Users\\coalm\\Desktop\\file.tsv"));
 
 
     }
