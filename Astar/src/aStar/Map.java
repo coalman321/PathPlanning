@@ -11,6 +11,7 @@ public class Map {
 
     /**
      * create a new blank map of size x,y
+     * <p>not recommended to exceed 5000 by 5000
      * @param size_x
      * @param size_y
      */
@@ -23,33 +24,11 @@ public class Map {
         }
     }
 
-    public Map (File file){
-        int x = 0;
-        int y = 1;
+    public Map (File file, int x, int y){
+        //System.out.println("deserializing map");
         try {
             Scanner scanner = new Scanner(file);
-
-            System.out.println("counting columns");
-            String s = scanner.nextLine();
-            Scanner line = new Scanner(s);
-            while (line.hasNextInt()){
-                //System.out.println("adding columns");
-                x++;
-                scanner.nextInt();
-            }
-            line.close();
-
-            System.out.println("counting rows");
-            while (scanner.hasNextLine()){
-                y++;
-                scanner.nextLine();
-            }
-
-            scanner.reset();
-
-
             nodeMap = new Node[x][y];
-            scanner.reset();
             for(int r = 0; r < y; r++){
                 for(int c = 0; c < x; c++){
                     nodeMap[r][c] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
@@ -72,12 +51,17 @@ public class Map {
         return nodeMap[y][x];
     }
 
+    public void close(){
+        nodeMap = null;
+        System.gc();
+    }
+
     public void writeToFile(File file){
         if(file.exists()){
             file = new File(file.getAbsolutePath() + file.getAbsoluteFile() + 1);
         }
         try {
-            System.out.println("serializing map");
+            //System.out.println("serializing map");
             PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             for(Node[] nodes : nodeMap){
                 String toWrite = "";
