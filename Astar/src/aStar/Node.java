@@ -1,8 +1,10 @@
 package aStar;
 
+import static aStar.Node.TraversalState.*;
+
 public class Node implements Comparable<Node>{
 
-    enum TraversalState{
+    public enum TraversalState{
         IMPASSABLE(9),  //cannot pass through
         UNKNOWN(6),     //this node is unknown need more data
         UNCERTAIN(4),   //data inconclusive but suggests passable
@@ -22,6 +24,17 @@ public class Node implements Comparable<Node>{
         @Override
         public String toString() {
             return "" + weight;
+        }
+
+    }
+
+    public static TraversalState getStateFromInt(int stateCode){
+        switch (stateCode){
+            case 9: return IMPASSABLE;
+            case 4: return UNCERTAIN;
+            case 2: return PASSABLE;
+            case 1: return TRAVERSED;
+            default: return UNKNOWN;
         }
     }
 
@@ -87,11 +100,11 @@ public class Node implements Comparable<Node>{
     }
 
     public boolean canTraverse(){
-        return traversalState != TraversalState.IMPASSABLE;
+        return traversalState != IMPASSABLE;
     }
 
     public boolean hasTraversed(){
-        return traversalState == TraversalState.TRAVERSED;
+        return traversalState == TRAVERSED;
     }
 
     /**

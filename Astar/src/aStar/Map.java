@@ -3,12 +3,11 @@ package aStar;
 import java.io.*;
 import java.util.Collections;
 import java.util.LinkedList;
-
+import java.util.Scanner;
 
 public class Map {
 
     Node[][] nodeMap;
-
 
     /**
      * create a new blank map of size x,y
@@ -24,8 +23,25 @@ public class Map {
         }
     }
 
-    public Map (File file){
-        //import cost map from file
+    public Map (File file) throws FileNotFoundException {
+        int x = 0;
+        int y = 0;
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()){
+            x++;
+        }
+        scanner.reset();
+        while (scanner.hasNextInt()){
+            y++;
+        }
+        nodeMap = new Node[x][y];
+        scanner.reset();
+        for(int r = 0; r < x; r++){
+            for(int c = 0; c < y; c++){
+                nodeMap[r][c] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
+            }
+        }
+
     }
 
     /**
