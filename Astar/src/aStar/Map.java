@@ -23,23 +23,40 @@ public class Map {
         }
     }
 
-    public Map (File file) throws FileNotFoundException {
+    public Map (File file){
         int x = 0;
-        int y = 0;
-        Scanner scanner = new Scanner(file);
-        while (scanner.hasNextLine()){
-            x++;
-        }
-        scanner.reset();
-        while (scanner.hasNextInt()){
-            y++;
-        }
-        nodeMap = new Node[x][y];
-        scanner.reset();
-        for(int r = 0; r < x; r++){
-            for(int c = 0; c < y; c++){
-                nodeMap[r][c] = new Node(c,r,Node.getStateFromInt(scanner.nextInt()));
+        int y = 1;
+        try {
+            Scanner scanner = new Scanner(file);
+
+            System.out.println("counting columns");
+            String s = scanner.nextLine();
+            Scanner line = new Scanner(s);
+            while (line.hasNextInt()){
+                //System.out.println("adding columns");
+                x++;
+                scanner.nextInt();
             }
+            line.close();
+
+            System.out.println("counting rows");
+            while (scanner.hasNextLine()){
+                y++;
+                scanner.nextLine();
+            }
+
+            scanner.reset();
+
+
+            nodeMap = new Node[x][y];
+            scanner.reset();
+            for(int r = 0; r < y; r++){
+                for(int c = 0; c < x; c++){
+                    nodeMap[r][c] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("failed to de-serialize map");
         }
 
     }

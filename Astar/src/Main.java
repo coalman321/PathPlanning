@@ -17,8 +17,11 @@ public class Main {
         //map.getNode(4,5).setTraversalState(aStar.Node.TraversalState.IMPASSABLE);
         System.out.println(map.getPathBetween(map.getNode(1,1), map.getNode(4, 4)));
 
-        map.writeToFile(new File("C:\\Users\\coalm\\Desktop\\file.tsv"));
+        //map.writeToFile(new File("C:\\Users\\coalm\\Desktop\\file.tsv"));
 
+
+        Map map2 = new Map(new File("C:\\Users\\coalm\\Desktop\\file.tsv"));
+        System.out.println(map2.getPathBetween(map2.getNode(1,1), map2.getNode(4, 4)));
 
     }
 
