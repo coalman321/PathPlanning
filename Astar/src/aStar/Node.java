@@ -7,6 +7,7 @@ public class Node implements Comparable<Node>{
     public enum TraversalState{
         IMPASSABLE(9),  //cannot pass through
         UNKNOWN(6),     //this node is unknown need more data
+        DEFAULT(6),
         UNCERTAIN(4),   //data inconclusive but suggests passable
         PASSABLE(2),    //passable node
         TRAVERSED(1);   //node that has already been traversed
