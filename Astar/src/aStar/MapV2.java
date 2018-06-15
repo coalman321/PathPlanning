@@ -58,6 +58,8 @@ public class MapV2 {
     }
 
     public void loadRegion (MapRegion region){
+        if(region.x_off + region.x_size > size_x || region.y_off + region.y_size > size_y)
+            throw new IndexOutOfBoundsException("Region exceeded map boundaries");
         writeRegion(loadedRegion);
         //System.out.println("called to load " + region);
         try {
@@ -164,7 +166,7 @@ public class MapV2 {
      */
     public LinkedList<Node> getPathBetween(Node start, Node end){
         //prep for mapping process
-        reset(); //reset mapping flags
+        loadRegion(getEncapRegion(start,end));
         setGoal(end); //set new goal node
         LinkedList<Node> toVisit = new LinkedList<>();
         toVisit.add(start); //create new visitation list and add start node
@@ -185,14 +187,6 @@ public class MapV2 {
 
     }
 
-    private void reset(){
-        for(Node[] nodes : loadedNodes){
-            for(Node node : nodes){
-                node.reset();
-            }
-        }
-    }
-
     private void setGoal(Node goal){
         //System.out.println("setting goal");
         for(Node[] nodes : loadedNodes){
@@ -200,6 +194,31 @@ public class MapV2 {
                 node.setGoal(goal);
             }
         }
+    }
+    private MapRegion getEncapRegion(Node one, Node two){
+        int buff = 10;
+        //load region around the two nodess with a set buffer size (probably 10 by 10)
+        int xoff, yoff, xsize, ysize;
+        if(one.pos_x < two.pos_x) {
+            xoff = one.pos_x - buff;
+            xsize = two.pos_x - one.pos_x + buff;
+        }
+        else {
+            xoff = two.pos_x - buff;
+            xsize = one.pos_x - two.pos_x + buff;
+        }
+        xoff = (xoff < 0)? 0 : xoff;
+        if(one.pos_y < two.pos_y){
+            yoff = one.pos_y - buff;
+            ysize = two.pos_y - one.pos_y + buff;
+        }
+        else {
+            yoff = two.pos_y - buff;
+            ysize = one.pos_y - two.pos_y + buff;
+        }
+        yoff = (yoff < 0)? 0 : yoff;
+
+        return new MapRegion(xoff,yoff,xsize,ysize);
     }
 
     private LinkedList<Node> reconsruct(Node end, Node start){

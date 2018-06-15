@@ -10,7 +10,8 @@ public class MainV2 {
         MapV2 inst = new MapV2(new File("C:\\Users\\Lynn's\\Desktop\\test.txt"), 1000,1000, new MapRegion(0,0,10,10));
         System.out.println("map created");
         inst.loadRegion(new MapRegion(20,20,20,20));
-        inst.loadRegion(new MapRegion(10,10,990,20));
+        //inst.loadRegion(new MapRegion(10,10,1500,20));
+        //inst.loadRegion(new MapRegion(20,20,20,20));
 
     }
 
