@@ -158,10 +158,8 @@ public class Map {
         while(prev != null && prev != start){
             path.addFirst(prev);
             prev = prev.getCameFrom();
-            if(prev == null){
-                return new LinkedList<>();  //short circuit to return empty list
-            }
         }
+        if(prev == null) return new LinkedList<>();  //short circuit to return empty list
         path.addFirst(start);
         //System.out.println("map reconstructed");
         return path;
