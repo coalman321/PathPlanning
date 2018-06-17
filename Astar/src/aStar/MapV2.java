@@ -118,12 +118,11 @@ public class MapV2 {
      * @return Node object at the coordinate pair specified, null of OOB
      */
     public Node getNode(int x, int y){
-        try {
-            return loadedNodes[y][x];
-        }
-        catch (ArrayIndexOutOfBoundsException e ){
-            return null;
-        }
+        if(x > loadedRegion.x_off && x < loadedRegion.x_off + loadedRegion.x_size &&
+                y > loadedRegion.y_off && y < loadedRegion.y_off + loadedRegion.y_size)
+                    return loadedNodes[y - loadedRegion.y_off][x - loadedRegion.x_off];
+
+        throw new ArrayIndexOutOfBoundsException("outside current loaded region");
     }
 
     public void close(){
@@ -172,16 +171,16 @@ public class MapV2 {
         toVisit.add(start); //create new visitation list and add start node
         Node current; //create node for manipulation
 
-        //System.out.println("mapping started");
+        System.out.println("mapping started");
         while(!toVisit.isEmpty()){
             current = toVisit.poll(); //pull the lowest f off the stack
-            //System.out.println("searching " + current);
+            System.out.println("searching " + current);
             if(current.equals(end)) break;
             toVisit.addAll(adjacentTo(current));
             Collections.sort(toVisit);// sort by lowest F value
-            //System.out.println("sorted list to visit " + toVisit);
+            System.out.println("sorted list to visit " + toVisit);
         }
-        //System.out.println("iteration complete");
+        System.out.println("iteration complete");
 
         return reconsruct(end, start);
 
@@ -229,10 +228,8 @@ public class MapV2 {
         while(prev != null && prev != start){
             path.addFirst(prev);
             prev = prev.getCameFrom();
-            if(prev == null){
-                return new LinkedList<>();  //short circuit to return empty list
-            }
         }
+        if(prev == null) return new LinkedList<>();  //short circuit to return empty list
         path.addFirst(start);
         //System.out.println("map reconstructed");
         return path;
