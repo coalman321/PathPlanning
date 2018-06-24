@@ -5,17 +5,19 @@ import static aStar.Node.TraversalState.*;
 public class Node implements Comparable<Node>{
 
     public enum TraversalState{
-        IMPASSABLE(9),  //cannot pass through
-        UNKNOWN(6),     //this node is unknown need more data
-        DEFAULT(6),
-        UNCERTAIN(4),   //data inconclusive but suggests passable
-        PASSABLE(2),    //passable node
-        TRAVERSED(1);   //node that has already been traversed
+        IMPASSABLE(9, "Impassable"),  //cannot pass through
+        UNKNOWN(6, "Unknown"),     //this node is unknown need more data
+        DEFAULT(6, "Default map creation"),
+        UNCERTAIN(4, "Uncertain"),   //data inconclusive but suggests passable
+        PASSABLE(2, "Passable"),    //passable node
+        TRAVERSED(1, "Traversed");   //node that has already been traversed
 
         private int weight;
+        private String name;
 
-        TraversalState(int weight){
+        TraversalState(int weight, String name){
             this.weight = weight;
+            this.name = name;
         }
 
         public int getWeight() {
@@ -24,6 +26,10 @@ public class Node implements Comparable<Node>{
 
         @Override
         public String toString() {
+            return name;
+        }
+
+        public String serialize(){
             return "" + weight;
         }
 
@@ -36,6 +42,7 @@ public class Node implements Comparable<Node>{
             case 2: return PASSABLE;
             case 1: return TRAVERSED;
             default: return UNKNOWN;
+            //ignore map default b/c it should result in unknown
         }
     }
 
@@ -54,7 +61,7 @@ public class Node implements Comparable<Node>{
      * @param pos_y y position in a map
      * @param traversalState traversal state of the node
      */
-    public Node(int pos_y, int pos_x, TraversalState traversalState ){
+    public Node(int pos_x, int pos_y, TraversalState traversalState ){
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.traversalState = traversalState;
@@ -66,7 +73,7 @@ public class Node implements Comparable<Node>{
      * @param pos_x x position in a map
      * @param pos_y y position in a map
      */
-    public Node(int pos_y, int pos_x){
+    public Node(int pos_x, int pos_y){
         this(pos_y, pos_x, TraversalState.UNKNOWN);
     }
 
@@ -135,10 +142,15 @@ public class Node implements Comparable<Node>{
 
     @Override
     public String toString() {
-        return "node X: " + pos_x + " Y: " + pos_y + (canTraverse()? " traversable": " impassable");
+        return "node X: " + pos_x + " Y: " + pos_y;
+    }
+
+    public String debug(){
+        return "node X: " + pos_x + " Y: " + pos_y + traversalState + " goal: " + goal + " cost: " + cost
+                + " F: " + getF() + "came from: " + cameFrom;
     }
 
     public String serialize(){
-        return traversalState.toString();
+        return traversalState.serialize();
     }
 }

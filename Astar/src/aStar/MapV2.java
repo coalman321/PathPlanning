@@ -17,8 +17,8 @@ public class MapV2 {
     /**
      * creates a map of size_x by size_y and writes it to file. a sub-region is then loaded into memory designated by region.
      * @param file file reference to write to
-     * @param size_x size of map to create
-     * @param size_y
+     * @param size_x of map to create
+     * @param size_y of map to create
      * @param region map region to load into memory
      */
     public MapV2(File file, int size_x, int size_y, MapRegion region){
@@ -27,12 +27,12 @@ public class MapV2 {
         //System.out.println(map.isFile() + "");
         if(map.isFile()) {
             try {
-                System.out.println("writing blank map");
+                //System.out.println("writing blank map");
                 PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
                 for (int r = 0; r < size_y; r++) {
                     String toWrite = "";
                     for (int c = 0; c < size_x; c++) {
-                        toWrite += Node.TraversalState.DEFAULT + "\t"; //TSV
+                        toWrite += Node.TraversalState.DEFAULT.serialize() + "\t"; //TSV
                     }
                     writer.println(toWrite);
                     writer.flush();
@@ -50,8 +50,8 @@ public class MapV2 {
     /**
      * loads a 10 by 10 array starting at 0,0
      * @param file mapping file
-     * @param size_x
-     * @param size_y
+     * @param size_x of map to create
+     * @param size_y of map to create
      */
     public MapV2(File file, int size_x, int size_y){
         this(file, size_x, size_y, new MapRegion(0,0,10,10));
@@ -77,11 +77,11 @@ public class MapV2 {
                         scanner.nextInt();
                         continue;
                     }
-                    loadedNodes[r - region.y_off][c - region.x_off] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
+                    loadedNodes[r - region.y_off][c - region.x_off] = new Node(c,r,Node.getStateFromInt(scanner.nextInt()));
                 }
             }
             loadedRegion = region;
-            System.out.println("loaded " + region);
+            //System.out.println("loaded " + region);
         } catch (FileNotFoundException e) {
             System.out.println("failed to de-serialize region");
         }
@@ -107,15 +107,15 @@ public class MapV2 {
         } catch (IOException e) {
             System.out.println("failed to serialize region");
         }
-        System.out.println(region + " written");
+        //System.out.println(region + " written");
     }
 
     /**
      * method used to retrieve a specific node on a given map
      * <p>can be used to set node properties
-     * @param y y coordinate
-     * @param x x coordinate
-     * @return Node object at the coordinate pair specified, null of OOB
+     * @param y coordinate
+     * @param x coordinate
+     * @return Node object at the coordinate pair specified
      */
     public Node getNode(int x, int y){
         if(x > loadedRegion.x_off && x < loadedRegion.x_off + loadedRegion.x_size &&
@@ -160,28 +160,32 @@ public class MapV2 {
     }
 
     /**
-     * Resets the mapping state of nodes for re-use
-     * <p><b>Only resets path specific flags<b/>
+     * finds a valid "path" between two nodes and dynamically loads map area needed
+     * @param start node to start with (just needs x & y)
+     * @param end node to end at (just needs x & y)
+     * @return a list of nodes representing the path
      */
     public LinkedList<Node> getPathBetween(Node start, Node end){
         //prep for mapping process
         loadRegion(getEncapRegion(start,end));
+        System.out.println("loaded region " + loadedRegion);
+        //make sure we have the loaded node version of the start and end nodes
+        start = getNode(start.pos_x, start.pos_y);
+        end = getNode(end.pos_x, end.pos_y);
         setGoal(end); //set new goal node
         LinkedList<Node> toVisit = new LinkedList<>();
         toVisit.add(start); //create new visitation list and add start node
-        Node current; //create node for manipulation
-
-        System.out.println("mapping started");
+        Node current; //create node instance for manipulation
+        //System.out.println("mapping started");
         while(!toVisit.isEmpty()){
-            current = toVisit.poll(); //pull the lowest f off the stack
-            System.out.println("searching " + current);
+            current = toVisit.poll(); //poll the lowest F off the stack
+            //System.out.println("searching " + current);
             if(current.equals(end)) break;
             toVisit.addAll(adjacentTo(current));
             Collections.sort(toVisit);// sort by lowest F value
-            System.out.println("sorted list to visit " + toVisit);
+            //System.out.println("sorted list to visit " + toVisit);
         }
-        System.out.println("iteration complete");
-
+        //System.out.println("iteration complete");
         return reconsruct(end, start);
 
     }
@@ -222,8 +226,9 @@ public class MapV2 {
 
     private LinkedList<Node> reconsruct(Node end, Node start){
         LinkedList<Node> path = new LinkedList<>();
-        path.addFirst(end);
-        Node prev = end.getCameFrom();
+        path.addFirst(end); //start from the end and work backwards
+        Node prev = end.getCameFrom(); // where did you come from where did you go?
+        //System.out.println(prev);
         //System.out.println("reconstructing map");
         while(prev != null && prev != start){
             path.addFirst(prev);

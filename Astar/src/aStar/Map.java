@@ -19,7 +19,7 @@ public class Map {
         nodeMap = new Node[size_x][size_y];
         for(int r = 0; r < size_x; r++){
             for(int c = 0; c < size_y; c++){
-                nodeMap[r][c] = new Node(r, c);
+                nodeMap[r][c] = new Node(c, r);
             }
         }
     }
@@ -31,7 +31,7 @@ public class Map {
             nodeMap = new Node[x][y];
             for(int r = 0; r < y; r++){
                 for(int c = 0; c < x; c++){
-                    nodeMap[r][c] = new Node(r,c,Node.getStateFromInt(scanner.nextInt()));
+                    nodeMap[r][c] = new Node(c,r,Node.getStateFromInt(scanner.nextInt()));
                 }
             }
         } catch (FileNotFoundException e) {
