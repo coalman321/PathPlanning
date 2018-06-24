@@ -74,7 +74,7 @@ public class Node implements Comparable<Node>{
      * @param pos_y y position in a map
      */
     public Node(int pos_x, int pos_y){
-        this(pos_y, pos_x, TraversalState.UNKNOWN);
+        this(pos_x, pos_y, TraversalState.UNKNOWN);
     }
 
     public int getPos_x(){

@@ -135,29 +135,39 @@ public class MapV2 {
         LinkedList<Node> toReturn = new LinkedList<>();
 
         //left
-        if(node.getPos_x() - 1 > -1 && loadedNodes[node.getPos_y()][node.getPos_x() - 1].canTraverse() && !loadedNodes[node.getPos_y()][node.getPos_x() - 1].getSearched()){
-            loadedNodes[node.getPos_y()][node.getPos_x() - 1].setCameFrom(node);
-            toReturn.add(loadedNodes[node.getPos_y()][node.getPos_x() - 1]);
+        if(node.getPos_x() - 1 > loadedRegion.x_off &&
+                loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() - 1 - loadedRegion.x_off].canTraverse() &&
+                !loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() - 1 - loadedRegion.x_off].getSearched()){
+            loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() - 1 - loadedRegion.x_off].setCameFrom(node);
+            toReturn.add(loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() - 1 - loadedRegion.x_off]);
         }
 
         //right
-        if(node.getPos_x() + 1 < loadedNodes[0].length && loadedNodes[node.getPos_y()][node.getPos_x() + 1].canTraverse() && !loadedNodes[node.getPos_y()][node.getPos_x() + 1].getSearched()) {
-            loadedNodes[node.getPos_y()][node.getPos_x() + 1].setCameFrom(node);
-            toReturn.add(loadedNodes[node.getPos_y()][node.getPos_x() + 1]);
+        if(node.getPos_x() + 1 < loadedRegion.x_off + loadedRegion.x_size &&
+                loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() + 1 - loadedRegion.x_off].canTraverse() &&
+                !loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() + 1 - loadedRegion.x_off].getSearched()) {
+            loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() + 1 - loadedRegion.x_off].setCameFrom(node);
+            toReturn.add(loadedNodes[node.getPos_y() - loadedRegion.y_off][node.getPos_x() + 1 - loadedRegion.x_off]);
         }
 
         //above
-        if(node.getPos_y() - 1 > -1 && loadedNodes[node.getPos_y() - 1][node.getPos_x()].canTraverse() && !loadedNodes[node.getPos_y() - 1][node.getPos_x()].getSearched()) {
-            loadedNodes[node.getPos_y() - 1][node.getPos_x()].setCameFrom(node);
-            toReturn.add(loadedNodes[node.getPos_y() - 1][node.getPos_x()]);
+        if(node.getPos_y() - 1 > loadedRegion.y_off &&
+                loadedNodes[node.getPos_y() - 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].canTraverse() &&
+                !loadedNodes[node.getPos_y() - 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].getSearched()) {
+            loadedNodes[node.getPos_y() - 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].setCameFrom(node);
+            toReturn.add(loadedNodes[node.getPos_y() - 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off]);
         }
         //below
-        if(node.getPos_y() + 1 < loadedNodes.length && loadedNodes[node.getPos_y() + 1][node.getPos_x()].canTraverse() && !loadedNodes[node.getPos_y() + 1][node.getPos_x()].getSearched()) {
-            loadedNodes[node.getPos_y() + 1][node.getPos_x()].setCameFrom(node);
-            toReturn.add(loadedNodes[node.getPos_y() + 1][node.getPos_x()]);
+        if(node.getPos_y() + 1 < loadedRegion.y_off + loadedRegion.y_size &&
+                loadedNodes[node.getPos_y() + 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].canTraverse() &&
+                !loadedNodes[node.getPos_y() + 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].getSearched()) {
+            loadedNodes[node.getPos_y() + 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off].setCameFrom(node);
+            toReturn.add(loadedNodes[node.getPos_y() + 1 - loadedRegion.y_off][node.getPos_x() - loadedRegion.x_off]);
         }
         return toReturn;
     }
+
+
 
     /**
      * finds a valid "path" between two nodes and dynamically loads map area needed
@@ -165,10 +175,10 @@ public class MapV2 {
      * @param end node to end at (just needs x & y)
      * @return a list of nodes representing the path
      */
-    public LinkedList<Node> getPathBetween(Node start, Node end){
+    public LinkedList<Node> getPathBetween(Node start, Node end, int buffer){
         //prep for mapping process
-        loadRegion(getEncapRegion(start,end));
-        System.out.println("loaded region " + loadedRegion);
+        loadRegion(getEncapRegion(start, end, buffer));
+        System.out.println("loaded " + loadedRegion);
         //make sure we have the loaded node version of the start and end nodes
         start = getNode(start.pos_x, start.pos_y);
         end = getNode(end.pos_x, end.pos_y);
@@ -198,28 +208,30 @@ public class MapV2 {
             }
         }
     }
-    private MapRegion getEncapRegion(Node one, Node two){
-        int buff = 10;
+    private MapRegion getEncapRegion(Node one, Node two, int buff){
         //load region around the two nodess with a set buffer size (probably 10 by 10)
         int xoff, yoff, xsize, ysize;
+        //one is less than two on x
         if(one.pos_x < two.pos_x) {
             xoff = one.pos_x - buff;
-            xsize = two.pos_x - one.pos_x + buff;
+            xsize = two.pos_x - xoff + buff;
         }
         else {
             xoff = two.pos_x - buff;
-            xsize = one.pos_x - two.pos_x + buff;
+            xsize = one.pos_x - xoff + buff;
         }
         xoff = (xoff < 0)? 0 : xoff;
+        //System.out.println("region x off: " + xoff + " x size " + xsize);
         if(one.pos_y < two.pos_y){
             yoff = one.pos_y - buff;
-            ysize = two.pos_y - one.pos_y + buff;
+            ysize = two.pos_y - yoff + buff;
         }
         else {
             yoff = two.pos_y - buff;
-            ysize = one.pos_y - two.pos_y + buff;
+            ysize = one.pos_y - yoff + buff;
         }
         yoff = (yoff < 0)? 0 : yoff;
+        //System.out.println("region y off: " + yoff + " y size " + ysize);
 
         return new MapRegion(xoff,yoff,xsize,ysize);
     }

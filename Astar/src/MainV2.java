@@ -23,7 +23,7 @@ public class MainV2 {
         System.out.println("enter X and y for end node:");
         Node end = new Node(input.nextInt(),input.nextInt());
         System.out.println("path from " + start + " to " + end);
-        System.out.println(inst.getPathBetween(start, end));
+        System.out.println(inst.getPathBetween(start, end, 10));
 
     }
 
