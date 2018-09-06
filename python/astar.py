@@ -7,6 +7,7 @@ class TraversalState(enum):
     PASSSABLE = 2
     UNCERTAIN = 4
     UNKNOWN = 6
+    DEFAULT = 6
     IMPASSIBLE = 8
 
 
@@ -46,3 +47,12 @@ class Node:
         self.hassearched = False
         self.camefrom = None
         self.goal = None
+
+
+class Map():
+    arr = None
+
+    def __init__(self, size_x, size_y):
+        self.arr = np.full((size_x,size_y), TraversalState.DEFAULT.value, np.int8)
+
+    def
