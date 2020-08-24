@@ -1,6 +1,11 @@
 #ifndef ASTARMAP_H
 #define ASTARMAP_H
 
+#include <vector>
+#include <QFile>
+
+#include "point2d.h"
+
 namespace astar {
 
     class MapRegion {
@@ -18,8 +23,30 @@ namespace astar {
 
     class AStarMap {
        public:
-        AStarMap();
+        AStarMap(QFile file);
+        void loadRegion(MapRegion region);
+
+       private:
+        std::vector<std::vector<Point2D>> loadedNodes;
+        MapRegion loadedRegion;
+        long metaSizeX = 0, metaSizeY = 0;
+        QFile fileRef;
     };
+
+    /*
+    QJsonDocument loadJson(QString fileName) {
+        QFile jsonFile(fileName);
+        jsonFile.open(QFile::ReadOnly);
+        return QJsonDocument().fromJson(jsonFile.readAll());
+    }
+
+    void saveJson(QJsonDocument document, QString fileName) {
+        QFile jsonFile(fileName);
+        jsonFile.open(QFile::WriteOnly);
+        jsonFile.write(document.toJson());
+    }
+
+    */
 
 };  // namespace astar
 
